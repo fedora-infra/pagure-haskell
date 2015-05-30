@@ -18,5 +18,14 @@ import Web.Pagure.Internal.Wreq
 import Web.Pagure.Types
 
 -- | Access the @/version@ endpoint.
-version :: PagureConfig -> IO (Response BL.ByteString)
-version pc = pagureGet pc "/version"
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT version pc
+-- Response {responseStatus = Status {statusCode = 200, [...]
+-- @
+version :: PagureT (Response BL.ByteString)
+version = pagureGet "/version"

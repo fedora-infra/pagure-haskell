@@ -14,11 +14,13 @@
 module Web.Pagure.Internal.Wreq where
 
 import Control.Lens
-import Data.Aeson (toJSON)
-import Data.Aeson.Lens (key, nth)
+import Control.Monad.IO.Class
+import Control.Monad.Trans.Reader
+--import Data.Aeson (toJSON)
+--import Data.Aeson.Lens (key, nth)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as BL
-import Data.List (dropWhile, dropWhileEnd)
+import Data.List (dropWhileEnd)
 import Network.Wreq
 import Network.Wreq.Types (Postable)
 import Web.Pagure.Types
@@ -29,23 +31,33 @@ apiVersion = 0
 
 -- | Construct an API URL path. Strips any preceeding slashes from the given
 -- 'String' parameter as well as the '_baseUrl' of the 'PagureConfig'.
-pagureUrl :: PagureConfig -> String -> String
-pagureUrl (PagureConfig url _) s =
-  dropWhileEnd (=='/') url ++ "/api/" ++ show apiVersion ++
-  "/" ++ dropWhile (== '/') s
+pagureUrl :: String -> PagureT String
+pagureUrl s = do
+  (PagureConfig url _) <- ask
+  return $ dropWhileEnd (=='/') url ++ "/api/" ++ show apiVersion ++
+    "/" ++ dropWhile (== '/') s
 
 -- | Set up a (possibly authenticated) request to the Pagure API.
-pagureWreqOptions :: PagureConfig -> Options
-pagureWreqOptions (PagureConfig _ (Just k)) =
-  defaults & header "Authorization" .~ [BS.pack k]
-pagureWreqOptions _ = defaults
+pagureWreqOptions :: PagureT Options
+pagureWreqOptions  = do
+  pc <- ask
+  return $ case pc of
+    PagureConfig _ (Just k) ->
+      defaults & header "Authorization" .~ [BS.pack k]
+    _ -> defaults
 
 -- | Perform a @GET@ request to the API.
-pagureGet :: PagureConfig -> String -> IO (Response BL.ByteString)
-pagureGet pc path = getWith (pagureWreqOptions pc) (pagureUrl pc path)
+pagureGet :: String -> PagureT (Response BL.ByteString)
+pagureGet path = do
+  opts <- pagureWreqOptions
+  path' <- pagureUrl path
+  liftIO $ getWith opts path'
 
 -- | Perform a @POST@ request to the API.
 pagurePost
   :: Postable a =>
-     PagureConfig -> String -> a -> IO (Response BL.ByteString)
-pagurePost pc path = postWith (pagureWreqOptions pc) (pagureUrl pc path)
+     String -> a -> PagureT (Response BL.ByteString)
+pagurePost path a = do
+  opts <- pagureWreqOptions
+  path' <- pagureUrl path
+  liftIO $ postWith opts path' a

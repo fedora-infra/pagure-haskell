@@ -13,6 +13,15 @@
 module Web.Pagure.Types where
 
 import Control.Lens
+import Control.Monad.Trans.Reader
+
+-- | Our 'PagureT' type which is really a 'ReaderT' with 'IO' as its base. For
+-- now, at least.
+type PagureT a = ReaderT PagureConfig IO a
+
+-- | Run the whole stack.
+runPagureT :: PagureT a -> PagureConfig -> IO a
+runPagureT = runReaderT
 
 -- | Describes how to connect to, and authenticate with, the
 -- <https://pagure.io/ Pagure> <https://pagure.io/api/0/ API>.
