@@ -54,9 +54,7 @@ pagureGet path = do
   liftIO $ getWith opts path'
 
 -- | Perform a @POST@ request to the API.
-pagurePost
-  :: Postable a =>
-     String -> a -> PagureT (Response BL.ByteString)
+pagurePost :: Postable a => String -> a -> PagureT (Response BL.ByteString)
 pagurePost path a = do
   opts <- pagureWreqOptions
   path' <- pagureUrl path
