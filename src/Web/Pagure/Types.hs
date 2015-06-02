@@ -14,6 +14,8 @@ module Web.Pagure.Types where
 
 import Control.Lens
 import Control.Monad.Trans.Reader
+import qualified Data.Text as T
+
 
 -- | Our 'PagureT' type which is really a 'ReaderT' with 'IO' as its base. For
 -- now, at least.
@@ -38,3 +40,6 @@ data PagureConfig = PagureConfig {
   , _apiKey :: Maybe String
   } deriving (Eq, Show)
 makeLenses ''PagureConfig
+
+type Repo = String
+type Tag = T.Text
