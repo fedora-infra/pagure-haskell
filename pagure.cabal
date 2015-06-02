@@ -16,9 +16,11 @@ cabal-version:       >= 1.10
 
 library
   exposed-modules:
-      Web.Pagure.Types
+      Web.Pagure.Extras
     , Web.Pagure.Internal.Wreq
-    , Web.Pagure.Extras
+    , Web.Pagure.Projects
+    , Web.Pagure.Types
+
     , Web.Pagure
   -- other-modules:
   -- other-extensions:

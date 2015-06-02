@@ -42,3 +42,4 @@ makeLenses ''PagureConfig
 
 type Repo = String
 type Tag = T.Text
+type Username = String

@@ -12,4 +12,5 @@
 module Web.Pagure (module P) where
 
 import Web.Pagure.Extras as P
+import Web.Pagure.Projects as P
 import Web.Pagure.Types as P
