@@ -16,6 +16,8 @@ module Web.Pagure.Extras where
 import Control.Lens
 import Data.Aeson.Lens
 import qualified Data.ByteString.Lazy.Char8 as BL
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
 import Web.Pagure.Types
@@ -47,3 +49,20 @@ tags :: Repo -> PagureT [Tag]
 tags r = do
   resp <- pagureGet (r ++ "/tags")
   return $ resp ^.. responseBody . key "tags" . values . _String
+
+-- | Access the @/error_codes@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT errorCodes pc
+-- fromList [("ENOREQ","Pull-Request not found"),("ENOISSUE[...]
+-- @
+--
+-- Of course, you can uses lenses to traverse the 'HM.HashMap' as usual.
+errorCodes :: PagureT (HM.HashMap T.Text T.Text)
+errorCodes = do
+  resp <- pagureGet "/error_codes"
+  return $ resp ^. responseBody . _Object . below _String

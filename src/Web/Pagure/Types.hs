@@ -16,7 +16,6 @@ import Control.Lens
 import Control.Monad.Trans.Reader
 import qualified Data.Text as T
 
-
 -- | Our 'PagureT' type which is really a 'ReaderT' with 'IO' as its base. For
 -- now, at least.
 type PagureT a = ReaderT PagureConfig IO a
