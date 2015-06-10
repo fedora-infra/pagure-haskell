@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module : Web.Pagure.Internal.Wreq
@@ -47,15 +46,21 @@ pagureWreqOptions  = do
     _ -> defaults
 
 -- | Perform a @GET@ request to the API.
-pagureGet :: String -> PagureT (Response BL.ByteString)
-pagureGet path = do
-  opts <- pagureWreqOptions
+pagureGetWith :: Options -> String -> PagureT (Response BL.ByteString)
+pagureGetWith opts path = do
   path' <- pagureUrl path
   liftIO $ getWith opts path'
 
+-- | Perform a @GET@ request to the API with default options.
+pagureGet :: String -> PagureT (Response BL.ByteString)
+pagureGet s = pagureWreqOptions >>= flip pagureGetWith s
+
 -- | Perform a @POST@ request to the API.
-pagurePost :: Postable a => String -> a -> PagureT (Response BL.ByteString)
-pagurePost path a = do
-  opts <- pagureWreqOptions
+pagurePostWith :: Postable a => Options -> String -> a -> PagureT (Response BL.ByteString)
+pagurePostWith opts path a = do
   path' <- pagureUrl path
   liftIO $ postWith opts path' a
+
+-- | Perform a @POST@ request to the API with default options.
+pagurePost :: Postable a => String -> a -> PagureT (Response BL.ByteString)
+pagurePost s a = flip (`pagurePostWith` s) a =<< pagureWreqOptions

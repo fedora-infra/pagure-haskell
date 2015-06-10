@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module : Web.Pagure.Projects
@@ -15,9 +14,12 @@ module Web.Pagure.Projects where
 
 import Control.Lens
 import Data.Aeson.Lens
+import Data.Maybe (maybeToList)
+import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
 import Web.Pagure.Types
+import Web.Pagure.Types.Issue
 
 -- | Access the @/[repo]/git/tags@ endpoint.
 --
@@ -46,7 +48,7 @@ gitTags r = do
 -- @
 gitTagsFork :: Username -> Repo -> PagureT [Tag]
 gitTagsFork u r = do
-  resp <- pagureGet ("fork/" ++ u ++ "/" ++ r ++ "/git/tags")
+  resp <- pagureGet ("fork/" ++ T.unpack u ++ "/" ++ r ++ "/git/tags")
   return $ resp ^.. responseBody . key "tags" . values . _String
 
 -- | Access the @/[repo]/issues@ endpoint.
@@ -63,9 +65,14 @@ gitTagsFork u r = do
 -- >>> λ> issues ^. issueList . to head . comments . to head . comment
 -- "wat?"
 -- @
-issues :: Repo -> PagureT IssueResponse
-issues r = do
-  resp <- asJSON =<< pagureGet (r ++ "/issues")
+issues :: Repo -> IssueFilters -> PagureT IssueResponse
+issues r filters = do
+  opts <- pagureWreqOptions
+  let opts' = opts & param "status" .~ [filters ^. status]
+                   & param "tags" .~ filters ^. tags . non []
+                   & param "assignee" .~ filters ^. assignee . to maybeToList
+                   & param "author" .~ filters ^. author . to maybeToList
+  resp <- asJSON =<< pagureGetWith opts' (r ++ "/issues")
   return (resp ^. responseBody)
 
 -- | Access the @/fork/[username]/[repo]/issues@ endpoint.
@@ -82,7 +89,13 @@ issues r = do
 -- >>> λ> issues ^. issueList . to head . comments . to head . comment
 -- "wat?"
 -- @
-issuesFork :: Username -> Repo -> PagureT IssueResponse
-issuesFork u r = do
-  resp <- asJSON =<< pagureGet ("fork/" ++ u ++ "/" ++ r ++ "/issues")
+issuesFork :: Username -> Repo -> IssueFilters -> PagureT IssueResponse
+issuesFork u r filters = do
+  opts <- pagureWreqOptions
+  let opts' = opts & param "status" .~ [filters ^. status]
+                   & param "tags" .~ filters ^. tags . non []
+                   & param "assignee" .~ filters ^. assignee . to maybeToList
+                   & param "author" .~ filters ^. author . to maybeToList
+  resp <- asJSON =<<
+          pagureGetWith opts' ("fork/" ++ T.unpack u ++ "/" ++ r ++ "/issues")
   return (resp ^. responseBody)

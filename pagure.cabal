@@ -20,6 +20,7 @@ library
     , Web.Pagure.Internal.Wreq
     , Web.Pagure.Projects
     , Web.Pagure.Types
+    , Web.Pagure.Types.Issue
 
     , Web.Pagure
   -- other-modules:
@@ -27,6 +28,7 @@ library
   build-depends:       aeson >= 0.7 && < 1
                      , base >= 4 && < 5
                      , bytestring >= 0.9 && < 1
+                     , data-default >= 0.4 && < 1
                      , lens >= 4 && < 5
                      , lens-aeson >= 1 && < 2
                      , text >= 1 && < 2
