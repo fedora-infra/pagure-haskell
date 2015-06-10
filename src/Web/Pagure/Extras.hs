@@ -31,8 +31,10 @@ import Web.Pagure.Types
 -- >>> runPagureT version pc
 -- Response {responseStatus = Status {statusCode = 200, [...]
 -- @
-version :: PagureT (Response BL.ByteString)
-version = pagureGet "/version"
+version :: PagureT BL.ByteString
+version = do
+  resp <- pagureGet "/version"
+  return (resp ^. responseBody)
 
 -- | Access the @/[repo]/tags@ endpoint.
 --
