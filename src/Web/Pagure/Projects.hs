@@ -14,7 +14,9 @@ module Web.Pagure.Projects where
 
 import Control.Lens
 import Data.Aeson.Lens
+import qualified Data.ByteString.Lazy.Char8 as C8
 import Data.Maybe (maybeToList)
+import Data.Monoid
 import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
@@ -135,3 +137,57 @@ newIssueFork ::
   -> Private
   -> PagureT (Maybe T.Text)
 newIssueFork u r = newIssue ("fork/" ++ T.unpack u ++ "/" ++ r)
+
+-- | Access the @/[repo]/pull-request/[request id]/merge@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (mergePullRequest "pagure-haskell" 123) pc
+-- @
+mergePullRequest :: Repo -> PullRequest -> PagureT (Maybe T.Text)
+mergePullRequest r pr = do
+  resp <- pagurePost (r ++ "/pull-request/" ++ show pr ++ "/merge")
+          (mempty :: C8.ByteString)
+  return (resp ^? responseBody . key "message" . _String)
+
+-- | Access the @/fork/[user]/[repo]/pull-request/[request id]/merge@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (mergePullRequestFork "relrod" "pagure-haskell" 123) pc
+-- @
+mergePullRequestFork :: Username -> Repo -> PullRequest -> PagureT (Maybe T.Text)
+mergePullRequestFork u r = mergePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
+
+-- | Access the @/[repo]/pull-request/[request id]/close@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (closePullRequest "pagure-haskell" 123) pc
+-- @
+closePullRequest :: Repo -> PullRequest -> PagureT (Maybe T.Text)
+closePullRequest r pr = do
+  resp <- pagurePost (r ++ "/pull-request/" ++ show pr ++ "/close")
+          (mempty :: C8.ByteString)
+  return (resp ^? responseBody . key "message" . _String)
+
+-- | Access the @/fork/[user]/[repo]/pull-request/[request id]/close@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (mergePullRequest "pagure-haskell" 123) pc
+-- @
+closePullRequestFork :: Username -> Repo -> PullRequest -> PagureT (Maybe T.Text)
+closePullRequestFork u r = closePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
