@@ -20,6 +20,7 @@ import Data.Monoid
 import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
+import Web.Pagure.Lens
 import Web.Pagure.Types
 import Web.Pagure.Types.Issue
 

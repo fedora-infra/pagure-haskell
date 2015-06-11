@@ -1,7 +1,3 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module : Web.Pagure.Types
@@ -15,7 +11,6 @@
 ----------------------------------------------------------------------------
 module Web.Pagure.Types where
 
-import Control.Lens
 import Control.Monad.Trans.Reader
 import Data.Default
 import qualified Data.Text as T
@@ -42,7 +37,6 @@ data PagureConfig = PagureConfig {
     _baseUrl :: String
   , _apiKey :: Maybe String
   } deriving (Eq, Show)
-makeLenses ''PagureConfig
 
 -- | Default to <https://pagure.io>, unauthenticated.
 instance Default PagureConfig where

@@ -1,7 +1,4 @@
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module : Web.Pagure.Types.Issue
@@ -16,7 +13,6 @@
 module Web.Pagure.Types.Issue where
 
 import Control.Applicative
-import Control.Lens
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Default
@@ -64,11 +60,6 @@ data IssueComment =
                , issueCommentUser :: IssueUser
                } deriving (Eq, Show)
 
-makeFields ''IssueResponse
-makeFields ''IssueArgs
-makeFields ''Issue
-makeFields ''IssueUser
-makeFields ''IssueComment
 
 instance FromJSON IssueResponse where
   parseJSON (Object x) = IssueResponse <$>
@@ -122,7 +113,6 @@ data IssueFilters =
                , issueFiltersAssignee :: Maybe Username  -- TODO: Are these correct?
                , issueFiltersAuthor :: Maybe Username
                } deriving (Eq, Show)
-makeFields ''IssueFilters
 
 instance Default IssueFilters where
   def = IssueFilters "Open" Nothing Nothing Nothing
