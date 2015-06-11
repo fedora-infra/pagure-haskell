@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -----------------------------------------------------------------------------
 -- |
 -- Module : Web.Pagure.Types
@@ -11,7 +12,10 @@
 ----------------------------------------------------------------------------
 module Web.Pagure.Types where
 
+import Control.Applicative
+import Control.Monad (mzero)
 import Control.Monad.Trans.Reader
+import Data.Aeson
 import Data.Default
 import qualified Data.Text as T
 
@@ -41,6 +45,18 @@ data PagureConfig = PagureConfig {
 -- | Default to <https://pagure.io>, unauthenticated.
 instance Default PagureConfig where
   def = PagureConfig "https://pagure.io" Nothing
+
+-- | Used in several API endpoint responses
+data User =
+  User { userFullname :: String
+       , userName :: String
+       } deriving (Eq, Show)
+
+instance FromJSON User where
+  parseJSON (Object x) = User <$>
+                         x .: "fullname"
+                     <*> x .: "name"
+  parseJSON _            = mzero
 
 type Content = String
 type Private = Bool

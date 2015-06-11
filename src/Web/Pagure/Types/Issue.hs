@@ -33,7 +33,7 @@ data IssueArgs =
             } deriving (Eq, Show)
 
 data Issue =
-  Issue { issueAssignee :: Maybe IssueUser
+  Issue { issueAssignee :: Maybe User
         , issueBlocks :: [String]    -- TODO: is [String] correct?
         , issueComments :: [IssueComment]
         , issueContent :: String
@@ -44,20 +44,15 @@ data Issue =
         , issueStatus :: String
         , issueTagList :: [Tag]
         , issueTitle :: String
-        , issueUser :: IssueUser
+        , issueUser :: User
         } deriving (Eq, Show)
-
-data IssueUser =
-  IssueUser { issueUserFullname :: String
-            , issueUserName :: String
-            } deriving (Eq, Show)
 
 data IssueComment =
   IssueComment { issueCommentComment :: String
                , issueCommentDateCreated :: String
                , issueCommentId :: Integer
                , issueCommentParent :: Maybe Integer
-               , issueCommentUser :: IssueUser
+               , issueCommentUser :: User
                } deriving (Eq, Show)
 
 
@@ -89,12 +84,6 @@ instance FromJSON Issue where
                      <*> x .: "tags"
                      <*> x .: "title"
                      <*> x .: "user"
-  parseJSON _            = mzero
-
-instance FromJSON IssueUser where
-  parseJSON (Object x) = IssueUser <$>
-                         x .: "fullname"
-                     <*> x .: "name"
   parseJSON _            = mzero
 
 instance FromJSON IssueComment where
