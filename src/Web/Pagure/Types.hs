@@ -17,6 +17,7 @@ module Web.Pagure.Types where
 
 import Control.Lens
 import Control.Monad.Trans.Reader
+import Data.Default
 import qualified Data.Text as T
 
 -- | Our 'PagureT' type which is really a 'ReaderT' with 'IO' as its base. For
@@ -42,6 +43,10 @@ data PagureConfig = PagureConfig {
   , _apiKey :: Maybe String
   } deriving (Eq, Show)
 makeLenses ''PagureConfig
+
+-- | Default to <https://pagure.io>, unauthenticated.
+instance Default PagureConfig where
+  def = PagureConfig "https://pagure.io" Nothing
 
 type Content = String
 type Private = Bool
