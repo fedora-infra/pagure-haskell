@@ -49,3 +49,4 @@ type Repo = String
 type Tag = T.Text
 type Title = String
 type Username = T.Text
+type Group = T.Text
