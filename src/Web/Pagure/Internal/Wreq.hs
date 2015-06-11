@@ -20,6 +20,7 @@ import Control.Monad.Trans.Reader
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.ByteString.Lazy.Char8 as BL
 import Data.List (dropWhileEnd)
+import Data.Monoid
 import Network.Wreq
 import Network.Wreq.Types (Postable)
 import Web.Pagure.Types
@@ -42,7 +43,7 @@ pagureWreqOptions  = do
   pc <- ask
   return $ case pc of
     PagureConfig _ (Just k) ->
-      defaults & header "Authorization" .~ [BS.pack k]
+      defaults & header "Authorization" .~ ["token " <> BS.pack k]
     _ -> defaults
 
 -- | Perform a @GET@ request to the API.

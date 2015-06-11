@@ -126,3 +126,11 @@ makeFields ''IssueFilters
 
 instance Default IssueFilters where
   def = IssueFilters "Open" Nothing Nothing Nothing
+
+data IssueStatus = Open | Invalid | InsufficientData | Fixed deriving (Eq, Show)
+
+issueStatusToAPI :: IssueStatus -> String
+issueStatusToAPI Open = "Open"
+issueStatusToAPI Invalid = "Invalid"
+issueStatusToAPI InsufficientData = "Insufficient data"
+issueStatusToAPI Fixed = "Fixed"

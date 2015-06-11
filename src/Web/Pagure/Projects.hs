@@ -99,3 +99,30 @@ issuesFork u r filters = do
   resp <- asJSON =<<
           pagureGetWith opts' ("fork/" ++ T.unpack u ++ "/" ++ r ++ "/issues")
   return (resp ^. responseBody)
+
+-- | Access the @/[repo]/new_issue@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> issues <- runPagureT (newIssue "pagure-haskell" "Test" "ignore" Open False) pc
+-- @
+newIssue ::
+  Repo
+  -> Title
+  -> Content
+  -> IssueStatus
+  -> Private
+  -> PagureT (Maybe T.Text)
+newIssue r t c s p = do
+  -- < pingou> so if the issue is private just put private=foo else don't
+  --           provide it to the request
+  resp <- pagurePost (r ++ "/new_issue") (["title" := t
+                                          ,"issue_content" := c
+                                          ,"status" := issueStatusToAPI s] ++
+                                          if p
+                                          then ["private" := T.pack "true"]
+                                          else [])
+  return (resp ^? responseBody . key "message" . _String)
