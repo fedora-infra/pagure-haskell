@@ -36,7 +36,7 @@ gitTags r = do
   resp <- pagureGet (r ++ "/git/tags")
   return $ resp ^.. responseBody . key "tags" . values . _String
 
--- | Access the @/[repo]/git/tags@ endpoint.
+-- | Access the @/fork/[username]/[repo]/git/tags@ endpoint.
 --
 -- Example:
 --
@@ -97,7 +97,7 @@ issuesFork u r = issues ("fork/" ++ T.unpack u ++ "/" ++ r)
 -- @
 -- >>> import Web.Pagure
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
--- >>> issues <- runPagureT (newIssue "pagure-haskell" "Test" "ignore" Open False) pc
+-- >>> runPagureT (newIssue "pagure-haskell" "Test" "ignore" Open False) pc
 -- @
 newIssue ::
   Repo
@@ -117,14 +117,14 @@ newIssue r t c s p = do
                                           else [])
   return (resp ^? responseBody . key "message" . _String)
 
--- | Access the @/[repo]/new_issue@ endpoint.
+-- | Access the @/fork/[user]/[repo]/new_issue@ endpoint.
 --
 -- Example:
 --
 -- @
 -- >>> import Web.Pagure
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
--- >>> issues <- runPagureT (newIssueFork "codeblock" "pagure" "Test" "ignore" Open False) pc
+-- >>> runPagureT (newIssueFork "codeblock" "pagure" "Test" "ignore" Open False) pc
 -- @
 newIssueFork ::
   Username
