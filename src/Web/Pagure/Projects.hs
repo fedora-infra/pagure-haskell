@@ -47,9 +47,7 @@ gitTags r = do
 -- ["0.1","0.1.1","0.1.10","0.1.2","0.1.3","0.1.4","0.1.5",[...]
 -- @
 gitTagsFork :: Username -> Repo -> PagureT [Tag]
-gitTagsFork u r = do
-  resp <- pagureGet ("fork/" ++ T.unpack u ++ "/" ++ r ++ "/git/tags")
-  return $ resp ^.. responseBody . key "tags" . values . _String
+gitTagsFork u r = gitTags ("fork/" ++ T.unpack u ++ "/" ++ r)
 
 -- | Access the @/[repo]/issues@ endpoint.
 --
@@ -90,15 +88,7 @@ issues r filters = do
 -- "wat?"
 -- @
 issuesFork :: Username -> Repo -> IssueFilters -> PagureT IssueResponse
-issuesFork u r filters = do
-  opts <- pagureWreqOptions
-  let opts' = opts & param "status" .~ [filters ^. status]
-                   & param "tags" .~ filters ^. tags . non []
-                   & param "assignee" .~ filters ^. assignee . to maybeToList
-                   & param "author" .~ filters ^. author . to maybeToList
-  resp <- asJSON =<<
-          pagureGetWith opts' ("fork/" ++ T.unpack u ++ "/" ++ r ++ "/issues")
-  return (resp ^. responseBody)
+issuesFork u r = issues ("fork/" ++ T.unpack u ++ "/" ++ r)
 
 -- | Access the @/[repo]/new_issue@ endpoint.
 --
@@ -126,3 +116,22 @@ newIssue r t c s p = do
                                           then ["private" := T.pack "true"]
                                           else [])
   return (resp ^? responseBody . key "message" . _String)
+
+-- | Access the @/[repo]/new_issue@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> issues <- runPagureT (newIssueFork "codeblock" "pagure" "Test" "ignore" Open False) pc
+-- @
+newIssueFork ::
+  Username
+  -> Repo
+  -> Title
+  -> Content
+  -> IssueStatus
+  -> Private
+  -> PagureT (Maybe T.Text)
+newIssueFork u r = newIssue ("fork/" ++ T.unpack u ++ "/" ++ r)
