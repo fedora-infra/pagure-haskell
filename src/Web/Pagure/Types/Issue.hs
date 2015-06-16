@@ -18,6 +18,7 @@ import Data.Aeson
 import Data.Default
 import qualified Data.Text as T
 import Web.Pagure.Types
+import Prelude
 
 -- | Response type for the 'Web.Pagure.Projects.issues' function.
 data IssueResponse =

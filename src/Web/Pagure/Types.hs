@@ -18,6 +18,7 @@ import Control.Monad.Trans.Reader
 import Data.Aeson
 import Data.Default
 import qualified Data.Text as T
+import Prelude
 
 -- | Our 'PagureT' type which is really a 'ReaderT' with 'IO' as its base. For
 -- now, at least.
