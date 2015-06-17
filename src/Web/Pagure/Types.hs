@@ -47,7 +47,7 @@ data PagureConfig = PagureConfig {
 instance Default PagureConfig where
   def = PagureConfig "https://pagure.io" Nothing
 
--- | Used in several API endpoint responses
+-- | Used in several API endpoint responses.
 data User =
   User { userFullname :: String
        , userName :: String
@@ -59,6 +59,26 @@ instance FromJSON User where
                      <*> x .: "name"
   parseJSON _            = mzero
 
+-- | Used in several API endpoint responses.
+data Project =
+  Project { projectDateCreated :: String
+          , projectDescription :: String
+          , projectId :: Integer
+          , projectName :: String
+          , projectParent :: Maybe String -- TODO: is it really a String?
+          , projectUser :: User
+          } deriving (Eq, Show)
+
+instance FromJSON Project where
+  parseJSON (Object x) = Project <$>
+                         x .: "date_created"
+                     <*> x .: "description"
+                     <*> x .: "id"
+                     <*> x .: "name"
+                     <*> x .: "parent"
+                     <*> x .: "user"
+  parseJSON _            = mzero
+
 type Content = String
 type Private = Bool
 type Repo = String
@@ -66,4 +86,4 @@ type Tag = T.Text
 type Title = String
 type Username = T.Text
 type Group = T.Text
-type PullRequest = Integer
+type PullRequestId = Integer

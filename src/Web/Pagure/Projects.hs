@@ -23,6 +23,7 @@ import Web.Pagure.Internal.Wreq
 import Web.Pagure.Lens
 import Web.Pagure.Types
 import Web.Pagure.Types.Issue
+import Web.Pagure.Types.Project
 
 -- | Access the @/[repo]/git/tags@ endpoint.
 --
@@ -148,7 +149,7 @@ newIssueFork u r = newIssue ("fork/" ++ T.unpack u ++ "/" ++ r)
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
 -- >>> runPagureT (mergePullRequest "pagure-haskell" 123) pc
 -- @
-mergePullRequest :: Repo -> PullRequest -> PagureT (Maybe T.Text)
+mergePullRequest :: Repo -> PullRequestId -> PagureT (Maybe T.Text)
 mergePullRequest r pr = do
   resp <- pagurePost (r ++ "/pull-request/" ++ show pr ++ "/merge")
           (mempty :: C8.ByteString)
@@ -163,7 +164,7 @@ mergePullRequest r pr = do
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
 -- >>> runPagureT (mergePullRequestFork "relrod" "pagure-haskell" 123) pc
 -- @
-mergePullRequestFork :: Username -> Repo -> PullRequest -> PagureT (Maybe T.Text)
+mergePullRequestFork :: Username -> Repo -> PullRequestId -> PagureT (Maybe T.Text)
 mergePullRequestFork u r = mergePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
 
 -- | Access the @/[repo]/pull-request/[request id]/close@ endpoint.
@@ -175,7 +176,7 @@ mergePullRequestFork u r = mergePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
 -- >>> runPagureT (closePullRequest "pagure-haskell" 123) pc
 -- @
-closePullRequest :: Repo -> PullRequest -> PagureT (Maybe T.Text)
+closePullRequest :: Repo -> PullRequestId -> PagureT (Maybe T.Text)
 closePullRequest r pr = do
   resp <- pagurePost (r ++ "/pull-request/" ++ show pr ++ "/close")
           (mempty :: C8.ByteString)
@@ -190,5 +191,34 @@ closePullRequest r pr = do
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
 -- >>> runPagureT (mergePullRequest "pagure-haskell" 123) pc
 -- @
-closePullRequestFork :: Username -> Repo -> PullRequest -> PagureT (Maybe T.Text)
+closePullRequestFork :: Username -> Repo -> PullRequestId -> PagureT (Maybe T.Text)
 closePullRequestFork u r = closePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
+
+-- | Access the @/[repo]/pull-request/[request id]@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (pullRequest "pagure" 244) pc
+-- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [..]
+-- @
+pullRequest :: Repo -> PullRequestId -> PagureT (Maybe PullRequest)
+pullRequest r pr = do
+  resp <- asJSON =<< pagureGet (r ++ "/pull-request/" ++ show pr)
+  return (resp ^. responseBody)
+
+
+-- | Access the @/fork/[user]/[repo]/pull-request/[request id]@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (pullRequestFork "relrod" "pagure" 244) pc
+-- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [..]
+-- @
+pullRequestFork :: Username -> Repo -> PullRequestId -> PagureT (Maybe PullRequest)
+pullRequestFork u r = pullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)

@@ -21,14 +21,19 @@ import Control.Lens
 
 import Web.Pagure.Types
 import Web.Pagure.Types.Issue
+import Web.Pagure.Types.Project
 
 -- Types
 makeLenses ''PagureConfig
+makeFields ''User
 
 -- Issues
 makeFields ''IssueResponse
 makeFields ''IssueArgs
 makeFields ''Issue
-makeFields ''IssueUser
 makeFields ''IssueComment
 makeFields ''IssueFilters
+
+-- Project
+makeFields ''PullRequest
+makeFields ''PullRequestComment

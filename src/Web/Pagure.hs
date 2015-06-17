@@ -15,4 +15,5 @@ import Web.Pagure.Extras as P
 import Web.Pagure.Projects as P
 import Web.Pagure.Types as P
 import Web.Pagure.Types.Issue as P hiding (tags)  -- TODO
+import Web.Pagure.Types.Project as P hiding (tags)  -- TODO
 import Web.Pagure.Users as P
