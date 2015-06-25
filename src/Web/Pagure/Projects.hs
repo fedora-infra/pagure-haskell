@@ -202,7 +202,7 @@ closePullRequestFork u r = closePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
 -- >>> import Web.Pagure
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
 -- >>> runPagureT (pullRequest "pagure" 244) pc
--- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [..]
+-- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [...]
 -- @
 pullRequest :: Repo -> PullRequestId -> PagureT (Maybe PullRequest)
 pullRequest r pr = do
@@ -218,7 +218,7 @@ pullRequest r pr = do
 -- >>> import Web.Pagure
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
 -- >>> runPagureT (pullRequestFork "relrod" "pagure" 244) pc
--- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [..]
+-- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [...]
 -- @
 pullRequestFork :: Username -> Repo -> PullRequestId -> PagureT (Maybe PullRequest)
 pullRequestFork u r = pullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)

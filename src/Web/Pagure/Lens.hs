@@ -24,7 +24,7 @@ import Web.Pagure.Types.Issue
 import Web.Pagure.Types.Project
 
 -- Types
-makeLenses ''PagureConfig
+makeFields ''PagureConfig
 makeFields ''User
 
 -- Issues
