@@ -115,9 +115,20 @@ newIssueFork u r = newIssue ("fork/" ++ T.unpack u ++ "/" ++ r)
 -- >>> import Web.Pagure
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
 -- >>> runPagureT (issue "pagure" 4) pc
--- ["0.1","0.1.1","0.1.10","0.1.2","0.1.3","0.1.4","0.1.5",[...]
 -- @
 issue :: Repo -> IssueId -> PagureT Issue
 issue r i = do
   resp <- asJSON =<< pagureGet (r ++ "/issue/" ++ show i)
   return (resp ^. responseBody)
+
+-- | Access the @/api/0/fork/[username]/[repo]/issue/[issue id]@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (issueFork "codeblock" "pagure" 4) pc
+-- @
+issueFork :: Username -> Repo -> IssueId -> PagureT Issue
+issueFork u r = issue ("fork/" ++ T.unpack u ++ "/" ++ r)
