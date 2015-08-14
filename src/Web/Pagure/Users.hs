@@ -14,6 +14,7 @@ module Web.Pagure.Users where
 
 import Control.Lens
 import Data.Aeson.Lens
+import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
 import Web.Pagure.Types
@@ -28,9 +29,15 @@ import Web.Pagure.Types
 -- >>> runPagureT users pc
 -- ["adamwill","alphacc","asamalik","ausil","bkabrda","bochecha",[...]
 -- @
-users :: PagureT [Username]
-users = do
-  resp <- pagureGet "users"
+users ::
+  Maybe T.Text -- ^ Optional pattern to search for
+  -> PagureT [Username]
+users pattern = do
+  opts <- pagureWreqOptions
+  let opts' = case pattern of
+        Nothing -> opts
+        Just p -> opts & param "pattern" .~ [p]
+  resp <- pagureGetWith opts' "users"
   return $ resp ^.. responseBody . key "users" . values . _String
 
 -- | Access the @/groups@ endpoint.
@@ -43,7 +50,13 @@ users = do
 -- >>> runPagureT groups pc
 -- ["releng","Fedora-Infra"]
 -- @
-groups :: PagureT [Group]
-groups = do
-  resp <- pagureGet "groups"
+groups ::
+  Maybe T.Text -- ^ Optional pattern to search for
+  -> PagureT [Group]
+groups pattern = do
+  opts <- pagureWreqOptions
+  let opts' = case pattern of
+        Nothing -> opts
+        Just p -> opts & param "pattern" .~ [p]
+  resp <- pagureGetWith opts' "groups"
   return $ resp ^.. responseBody . key "groups" . values . _String
