@@ -79,11 +79,12 @@ instance FromJSON Project where
                      <*> x .: "user"
   parseJSON _            = mzero
 
+type Comment = T.Text
 type Content = String
+type Group = T.Text
 type Private = Bool
+type PullRequestId = Integer
 type Repo = String
 type Tag = T.Text
 type Title = String
 type Username = T.Text
-type Group = T.Text
-type PullRequestId = Integer
