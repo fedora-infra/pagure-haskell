@@ -82,6 +82,7 @@ instance FromJSON Project where
 type Comment = T.Text
 type Content = String
 type Group = T.Text
+type IssueId = Integer
 type Private = Bool
 type PullRequestId = Integer
 type Repo = String
