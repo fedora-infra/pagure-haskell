@@ -85,9 +85,7 @@ newIssue r t c s p = do
   resp <- pagurePost (r ++ "/new_issue") (["title" := t
                                           ,"issue_content" := c
                                           ,"status" := issueStatusToAPI s] ++
-                                          if p
-                                          then ["private" := T.pack "true"]
-                                          else [])
+                                          ["private" := T.pack "true" | p])
   return (resp ^? responseBody . key "message" . _String)
 
 -- | Access the @/fork/[user]/[repo]/new_issue@ endpoint.

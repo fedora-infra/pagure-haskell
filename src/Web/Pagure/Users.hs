@@ -30,7 +30,7 @@ import Web.Pagure.Types
 -- @
 users :: PagureT [Username]
 users = do
-  resp <- pagureGet ("users")
+  resp <- pagureGet "users"
   return $ resp ^.. responseBody . key "users" . values . _String
 
 -- | Access the @/groups@ endpoint.
@@ -45,5 +45,5 @@ users = do
 -- @
 groups :: PagureT [Group]
 groups = do
-  resp <- pagureGet ("groups")
+  resp <- pagureGet "groups"
   return $ resp ^.. responseBody . key "groups" . values . _String
