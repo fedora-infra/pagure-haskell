@@ -36,6 +36,18 @@ mergePullRequest r pr = do
           (mempty :: C8.ByteString)
   return (resp ^? responseBody . key "message" . _String)
 
+-- | Access the @/fork/[user]/[repo]/pull-request/[request id]/merge@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (mergePullRequestFork "relrod" "pagure-haskell" 123) pc
+-- @
+mergePullRequestFork :: Username -> Repo -> PullRequestId -> PagureT (Maybe T.Text)
+mergePullRequestFork u r = mergePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
+
 -- | Access the @/[repo]/pull-request/[request id]/close@ endpoint.
 --
 -- Example:
@@ -51,6 +63,18 @@ closePullRequest r pr = do
           (mempty :: C8.ByteString)
   return (resp ^? responseBody . key "message" . _String)
 
+-- | Access the @/fork/[user]/[repo]/pull-request/[request id]/close@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (mergePullRequest "pagure-haskell" 123) pc
+-- @
+closePullRequestFork :: Username -> Repo -> PullRequestId -> PagureT (Maybe T.Text)
+closePullRequestFork u r = closePullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
+
 -- | Access the @/[repo]/pull-request/[request id]@ endpoint.
 --
 -- Example:
@@ -65,6 +89,20 @@ pullRequest :: Repo -> PullRequestId -> PagureT (Maybe PullRequest)
 pullRequest r pr = do
   resp <- asJSON =<< pagureGet (r ++ "/pull-request/" ++ show pr)
   return (resp ^. responseBody)
+
+
+-- | Access the @/fork/[user]/[repo]/pull-request/[request id]@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (pullRequestFork "relrod" "pagure" 244) pc
+-- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [...]
+-- @
+pullRequestFork :: Username -> Repo -> PullRequestId -> PagureT (Maybe PullRequest)
+pullRequestFork u r = pullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
 
 -- | Access the @/[repo]/pull-request/[request id]/comment@ endpoint.
 --
