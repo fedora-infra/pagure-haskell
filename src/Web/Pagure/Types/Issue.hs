@@ -48,6 +48,10 @@ data Issue =
         , issueUser :: User
         } deriving (Eq, Show)
 
+-- | When requesting a particular comment, we get a different structure than
+-- what we'd get if we were requesting an issue and looking at its comments.
+-- For now, we ignore the extra fields. At some point, it would be good to unify
+-- the two responses upstream.
 data IssueComment =
   IssueComment { issueCommentComment :: String
                , issueCommentDateCreated :: String
@@ -55,7 +59,6 @@ data IssueComment =
                , issueCommentParent :: Maybe Integer
                , issueCommentUser :: User
                } deriving (Eq, Show)
-
 
 instance FromJSON IssueResponse where
   parseJSON (Object x) = IssueResponse <$>

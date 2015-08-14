@@ -107,7 +107,7 @@ newIssueFork ::
   -> PagureT (Maybe T.Text)
 newIssueFork u r = newIssue ("fork/" ++ T.unpack u ++ "/" ++ r)
 
--- | Access the @/api/0/[repo]/issue/[issue id]@ endpoint.
+-- | Access the @/[repo]/issue/[issue id]@ endpoint.
 --
 -- Example:
 --
@@ -121,7 +121,7 @@ issue r i = do
   resp <- asJSON =<< pagureGet (r ++ "/issue/" ++ show i)
   return (resp ^. responseBody)
 
--- | Access the @/api/0/fork/[username]/[repo]/issue/[issue id]@ endpoint.
+-- | Access the @/fork/[username]/[repo]/issue/[issue id]@ endpoint.
 --
 -- Example:
 --
@@ -132,3 +132,34 @@ issue r i = do
 -- @
 issueFork :: Username -> Repo -> IssueId -> PagureT Issue
 issueFork u r = issue ("fork/" ++ T.unpack u ++ "/" ++ r)
+
+-- | Access the @/[repo]/issue/[issue id]/comment/[comment id]@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (issueComment "pagure" 262 3) pc
+-- @
+issueComment :: Repo -> IssueId -> CommentId -> PagureT (Maybe IssueComment)
+issueComment r i c = do
+  resp <- asJSON =<< pagureGet (r ++ "/issue/" ++ show i ++ "/comment/" ++ show c)
+  return (resp ^. responseBody)
+
+-- | Access the @/fork/[repo]/issue/[issue id]/comment/[comment id]@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (issueCommentFork "codeblock" "pagure" 262 3) pc
+-- @
+issueCommentFork ::
+  Username
+  -> Repo
+  -> IssueId
+  -> CommentId
+  -> PagureT (Maybe IssueComment)
+issueCommentFork u r = issueComment ("fork/" ++ T.unpack u ++ "/" ++ r)

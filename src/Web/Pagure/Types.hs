@@ -80,6 +80,7 @@ instance FromJSON Project where
   parseJSON _            = mzero
 
 type Comment = T.Text
+type CommentId = Integer
 type Content = String
 type Group = T.Text
 type IssueId = Integer
