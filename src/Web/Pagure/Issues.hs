@@ -14,16 +14,13 @@ module Web.Pagure.Issues where
 
 import Control.Lens
 import Data.Aeson.Lens
-import qualified Data.ByteString.Lazy.Char8 as C8
 import Data.Maybe (maybeToList)
-import Data.Monoid
 import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
 import Web.Pagure.Lens
 import Web.Pagure.Types
 import Web.Pagure.Types.Issue
-import Web.Pagure.Types.Project
 
 -- | Access the @/[repo]/issues@ endpoint.
 --

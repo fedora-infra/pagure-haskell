@@ -12,11 +12,8 @@
 ----------------------------------------------------------------------------
 module Web.Pagure.Types.Project where
 
-import Control.Applicative
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.Default
-import qualified Data.Text as T
 import Web.Pagure.Types
 
 data PullRequest =

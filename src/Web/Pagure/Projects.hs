@@ -17,7 +17,6 @@ import Data.Aeson.Lens
 import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
-import Web.Pagure.Lens
 import Web.Pagure.Types
 
 -- | Access the @/[repo]/git/tags@ endpoint.
