@@ -34,16 +34,3 @@ gitTags :: Repo -> PagureT [Tag]
 gitTags r = do
   resp <- pagureGet (r ++ "/git/tags")
   return $ resp ^.. responseBody . key "tags" . values . _String
-
--- | Access the @/fork/[username]/[repo]/git/tags@ endpoint.
---
--- Example:
---
--- @
--- >>> import Web.Pagure
--- >>> let pc = PagureConfig "https://pagure.io" Nothing
--- >>> runPagureT (gitTagsFork "codeblock" "pagure") pc
--- ["0.1","0.1.1","0.1.10","0.1.2","0.1.3","0.1.4","0.1.5",[...]
--- @
-gitTagsFork :: Username -> Repo -> PagureT [Tag]
-gitTagsFork u r = gitTags ("fork/" ++ T.unpack u ++ "/" ++ r)

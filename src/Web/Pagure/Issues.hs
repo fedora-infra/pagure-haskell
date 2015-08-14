@@ -49,23 +49,6 @@ issues r filters = do
   resp <- asJSON =<< pagureGetWith opts' (r ++ "/issues")
   return (resp ^. responseBody)
 
--- | Access the @/fork/[username]/[repo]/issues@ endpoint.
---
--- Traversing the response is particularly nice because we define lenses for all
--- of the fields you get back. See the example below.
---
--- Example:
---
--- @
--- >>> import Web.Pagure
--- >>> let pc = PagureConfig "https://pagure.io" Nothing
--- >>> issues <- runPagureT (issuesFork "codeblock" "pagure") pc
--- >>> λ> issues ^. issueList . to head . comments . to head . comment
--- "wat?"
--- @
-issuesFork :: Username -> Repo -> IssueFilters -> PagureT IssueResponse
-issuesFork u r = issues ("fork/" ++ T.unpack u ++ "/" ++ r)
-
 -- | Access the @/[repo]/new_issue@ endpoint.
 --
 -- Example:
@@ -92,25 +75,6 @@ newIssue r t c s p = do
                                           then ["private" := T.pack "true"]
                                           else [])
   return (resp ^? responseBody . key "message" . _String)
-
--- | Access the @/fork/[user]/[repo]/new_issue@ endpoint.
---
--- Example:
---
--- @
--- >>> import Web.Pagure
--- >>> let pc = PagureConfig "https://pagure.io" Nothing
--- >>> runPagureT (newIssueFork "codeblock" "pagure" "Test" "ignore" Open False) pc
--- @
-newIssueFork ::
-  Username
-  -> Repo
-  -> Title
-  -> Content
-  -> IssueStatus
-  -> Private
-  -> PagureT (Maybe T.Text)
-newIssueFork u r = newIssue ("fork/" ++ T.unpack u ++ "/" ++ r)
 
 -- | Access the @/api/0/[repo]/issue/[issue id]@ endpoint.
 --
