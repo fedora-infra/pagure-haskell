@@ -18,6 +18,7 @@ import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
 import Web.Pagure.Types
+import Web.Pagure.Types.User
 
 -- | Access the @/users@ endpoint.
 --
@@ -60,3 +61,17 @@ groups pattern = do
         Just p -> opts & param "pattern" .~ [p]
   resp <- pagureGetWith opts' "groups"
   return $ resp ^.. responseBody . key "groups" . values . _String
+
+-- | Access the @/user/[username]@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (user "codeblock") pc
+-- @
+user :: Username -> PagureT (Maybe UserResponse)
+user u = do
+  resp <- asJSON =<< pagureGet ("user/" ++ T.unpack u)
+  return $ resp ^. responseBody

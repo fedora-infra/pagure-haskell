@@ -24,6 +24,7 @@ library
     , Web.Pagure.Types
     , Web.Pagure.Types.Issue
     , Web.Pagure.Types.Project
+    , Web.Pagure.Types.User
     , Web.Pagure.Users
     , Web.Pagure
   -- other-modules:
