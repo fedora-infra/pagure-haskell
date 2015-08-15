@@ -163,3 +163,38 @@ issueCommentFork ::
   -> CommentId
   -> PagureT (Maybe IssueComment)
 issueCommentFork u r = issueComment ("fork/" ++ T.unpack u ++ "/" ++ r)
+
+-- | Access the @/[repo]/issue/[issue id]/comment@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" "key here"
+-- >>> runPagureT (newIssueComment "test" 1 "This is a test comment. Woot.") pc
+-- @
+newIssueComment ::
+  Repo
+  -> IssueId
+  -> Comment
+  -> PagureT (Maybe T.Text)
+newIssueComment r i c = do
+  resp <- pagurePost (r ++ "/issue/" ++ show i ++ "/comment") ["comment" := c]
+  return (resp ^? responseBody . key "message" . _String)
+
+-- | Access the @/fork/[username]/[repo]/issue/[issue id]/comment@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" "key here"
+-- >>> runPagureT (newIssueCommentFork "codeblock" "test" 1 "This is a test comment. Woot.") pc
+-- @
+newIssueCommentFork ::
+  Username
+  -> Repo
+  -> IssueId
+  -> Comment
+  -> PagureT (Maybe T.Text)
+newIssueCommentFork u r = newIssueComment ("fork/" ++ T.unpack u ++ "/" ++ r)
