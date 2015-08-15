@@ -111,8 +111,7 @@ pullRequestFork u r = pullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
 -- @
 -- >>> import Web.Pagure
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
--- >>> runPagureT (pullRequest "pagure" 244) pc
--- Just (PullRequest {pullRequestAssignee = Nothing, pullRequestBranch = [...]
+-- >>> runPagureT (commentPullRequest "pagure" 244) pc
 -- @
 commentPullRequest ::
   Repo
@@ -121,3 +120,19 @@ commentPullRequest ::
 commentPullRequest r pr = do
   resp <- asJSON =<< pagureGet (r ++ "/pull-request/" ++ show pr)
   return (resp ^. responseBody)
+
+-- | Access the @/fork/[username]/[repo]/pull-request/[request id]/comment@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (commrntPullRequestFork "pagure" 244) pc
+-- @
+commentPullRequestFork ::
+  Username
+  -> Repo
+  -> PullRequestId
+  -> PagureT (Maybe PullRequest)
+commentPullRequestFork u r = commentPullRequest ("fork/" ++ T.unpack u ++ "/" ++ r)
