@@ -19,6 +19,7 @@ library
       Web.Pagure.Extras
     , Web.Pagure.Internal.Wreq
     , Web.Pagure.Issues
+    , Web.Pagure.Lens
     , Web.Pagure.Projects
     , Web.Pagure.PullRequests
     , Web.Pagure.Types
