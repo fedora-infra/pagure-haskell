@@ -61,6 +61,13 @@ tags r pattern = do
   resp <- pagureGetWith opts' (r ++ "/tags")
   return $ resp ^.. responseBody . key "tags" . values . _String
 
+tagsFork ::
+  Username
+  -> Repo
+  -> Maybe T.Text -- ^ An optional @pattern@.
+  -> PagureT [Tag]
+tagsFork u r = tags ("fork/" ++ T.unpack u ++ "/" ++ r)
+
 -- | Access the @/error_codes@ endpoint.
 --
 -- Example:
