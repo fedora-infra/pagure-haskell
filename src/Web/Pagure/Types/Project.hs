@@ -16,6 +16,17 @@ import Control.Monad (mzero)
 import Data.Aeson
 import Web.Pagure.Types
 
+data ProjectsResponse =
+  ProjectsResponse { projectsResponseTotalProjects :: Integer
+                   , projectsResponseProjects :: [Project]
+                   } deriving (Eq, Show)
+
+instance FromJSON ProjectsResponse where
+  parseJSON (Object x) = ProjectsResponse <$>
+                         x .: "total_projects"
+                     <*> x .: "projects"
+  parseJSON _            = mzero
+
 data PullRequest =
   PullRequest { pullRequestAssignee :: Maybe String
               , pullRequestBranch :: String

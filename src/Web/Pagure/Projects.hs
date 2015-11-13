@@ -14,10 +14,12 @@ module Web.Pagure.Projects where
 
 import Control.Lens
 import Data.Aeson.Lens
+import Data.Maybe (maybeToList)
 import qualified Data.Text as T
 import Network.Wreq
 import Web.Pagure.Internal.Wreq
 import Web.Pagure.Types
+import Web.Pagure.Types.Project
 
 -- | Access the @/[repo]/git/tags@ endpoint.
 --
@@ -46,3 +48,29 @@ gitTags r = do
 -- @
 gitTagsFork :: Username -> Repo -> PagureT [Tag]
 gitTagsFork u r = gitTags ("fork/" ++ T.unpack u ++ "/" ++ r)
+
+-- | Access the @/projects@ endpoint.
+--
+-- Example:
+--
+-- @
+-- >>> import Web.Pagure
+-- >>> let pc = PagureConfig "https://pagure.io" Nothing
+-- >>> runPagureT (projects Nothing (Just "codeblock") Nothing) pc
+-- @
+projects ::
+  Maybe Tag -- ^ Tags
+  -> Maybe Username -- ^ Username
+  -> Maybe Bool -- ^ Fork
+  -> PagureT ProjectsResponse
+projects t u f = do
+  opts <- pagureWreqOptions
+  let opts' = opts & param "tags" .~ maybeToList t
+                   & param "username" .~ maybeToList u
+                   & param "fork" .~ [maybeToBoolString f]
+  resp <- asJSON =<< pagureGetWith opts' ("/projects")
+  return (resp ^. responseBody)
+  where
+    maybeToBoolString (Just True)  = "true"
+    maybeToBoolString (Just False) = "false"
+    maybeToBoolString Nothing      = "false"
