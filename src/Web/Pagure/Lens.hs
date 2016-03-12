@@ -22,6 +22,7 @@ import Control.Lens
 import Web.Pagure.Types
 import Web.Pagure.Types.Issue
 import Web.Pagure.Types.Project
+import Web.Pagure.Types.User
 
 -- Types
 makeFields ''PagureConfig
@@ -37,3 +38,7 @@ makeFields ''IssueFilters
 -- Project
 makeFields ''PullRequest
 makeFields ''PullRequestComment
+
+-- User
+makeFields ''UserResponse
+makeFields ''UserRepo

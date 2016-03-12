@@ -19,9 +19,9 @@ import Web.Pagure.Types
 import Prelude
 
 data UserResponse =
-  UserResponse { userForks :: [UserRepo]
-               , userRepos :: [UserRepo]
-               , user :: User
+  UserResponse { userResponseForks :: [UserRepo]
+               , userResponseRepos :: [UserRepo]
+               , userResponseUser  :: User
                } deriving (Eq, Show)
 
 data UserRepo =

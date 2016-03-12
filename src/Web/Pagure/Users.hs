@@ -69,9 +69,9 @@ groups pattern = do
 -- @
 -- >>> import Web.Pagure
 -- >>> let pc = PagureConfig "https://pagure.io" Nothing
--- >>> runPagureT (user "codeblock") pc
+-- >>> runPagureT (userInfo "codeblock") pc
 -- @
-user :: Username -> PagureT (Maybe UserResponse)
-user u = do
+userInfo :: Username -> PagureT (Maybe UserResponse)
+userInfo u = do
   resp <- asJSON =<< pagureGet ("user/" ++ T.unpack u)
   return $ resp ^. responseBody
