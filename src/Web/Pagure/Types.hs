@@ -9,6 +9,11 @@
 -- Portability : ghc (lens)
 --
 -- Types used within the Pagure API.
+--
+-- Endpoint-specific types are found in the other Web.Pagure.Types.* modules.
+--
+-- This module contains the types to configure and use pagure-haskell, along
+-- with types that are shared across multiple endpoints.
 ----------------------------------------------------------------------------
 module Web.Pagure.Types where
 

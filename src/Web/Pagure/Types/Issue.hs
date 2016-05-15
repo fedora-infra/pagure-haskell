@@ -23,6 +23,7 @@ import Prelude
 -- | Response type for the 'Web.Pagure.Projects.issues' function.
 data IssueResponse =
   IssueResponse { issueResponseArgs :: IssueArgs
+                , issueResponseTotalIssues :: Integer
                 , issueResponseIssueList :: [Issue]
                 } deriving (Eq, Show)
 
@@ -63,6 +64,7 @@ data IssueComment =
 instance FromJSON IssueResponse where
   parseJSON (Object x) = IssueResponse <$>
                          x .: "args"
+                     <*> x .: "total_issues"
                      <*> x .: "issues"
   parseJSON _            = mzero
 
