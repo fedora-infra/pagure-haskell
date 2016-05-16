@@ -8,9 +8,12 @@ module Web.Pagure.Lens where
 import Control.Lens
 import Web.Pagure.Users
 
+makeFields ''GroupName
 makeFields ''GroupsR
-makeFields ''UsersR
-makeFields ''UserR
 makeFields ''Repo
-makeFields ''User
 makeFields ''RepoSettings
+makeFields ''User
+makeFields ''UserFullname
+makeFields ''UserR
+makeFields ''Username
+makeFields ''UsersR

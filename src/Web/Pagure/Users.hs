@@ -8,7 +8,7 @@
 
 module Web.Pagure.Users where
 
-import Data.Aeson
+import Data.Aeson as A
 import Data.String (IsString)
 import Control.Monad (mzero)
 import qualified Data.Text as T
@@ -42,9 +42,16 @@ instance ToParam (QueryParam "pattern" Pattern) where
 ------------------------------------------------------------
 
 -- | A pagure group. The only thing we get about it from the API is its name.
-newtype GroupName = GroupName T.Text deriving (Eq, Generic, IsString, Ord, Show)
-instance FromJSON GroupName
-instance ToJSON GroupName
+newtype GroupName =
+  GroupName { groupNameGroupName :: T.Text }
+  deriving (Eq, Generic, IsString, Ord, Show)
+
+instance FromJSON GroupName where
+  parseJSON (String x) = return (GroupName x)
+  parseJSON _ = mzero
+
+instance ToJSON GroupName where
+  toJSON (GroupName x) = A.String x
 
 -- | @/groups@ endpoint response.
 data GroupsR = GroupsR {
@@ -75,10 +82,19 @@ instance ToSample GroupsR where
 ------------------------------------------------------------
 
 -- | A pagure username.
-newtype Username = Username T.Text deriving (Eq, Generic, IsString, Ord, Show)
-instance FromJSON Username
-instance ToJSON Username
+newtype Username =
+  Username { usernameUsername :: T.Text }
+  deriving (Eq, Generic, IsString, Ord, Show)
+
+instance FromJSON Username where
+  parseJSON (String x) = return (Username x)
+  parseJSON _ = mzero
+
+instance ToJSON Username where
+  toJSON (Username x) = A.String x
+
 instance ToHttpApiData Username where toUrlPiece (Username a) = a
+
 instance ToCapture (Capture "username" Username) where
   toCapture _ =
     DocCapture "username"
@@ -131,10 +147,15 @@ instance ToJSON UserR where
     object ["forks" .= a, "repos" .= b, "user" .= c]
 
 newtype UserFullname =
-  UserFullname T.Text
+  UserFullname { userFullnameFullname :: T.Text }
   deriving (Eq, Generic, IsString, Ord, Show)
-instance FromJSON UserFullname
-instance ToJSON UserFullname
+
+instance FromJSON UserFullname where
+  parseJSON (String x) = return (UserFullname x)
+  parseJSON _ = mzero
+
+instance ToJSON UserFullname where
+  toJSON (UserFullname x) = A.String x
 
 -- | A 'User' in pagure consists of the user\'s fullname and username.
 data User = User {
