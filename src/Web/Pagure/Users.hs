@@ -18,6 +18,9 @@ import Servant.Docs hiding (API)
 
 -- We introduce a convention of having the *response* types end in R.
 
+-- | Endpoints for the \"Users\" section of the API.
+--
+-- See https://pagure.io/api/0/#users for details.
 type UsersAPI =
   "api" :> "0" :> "groups" :> QueryParam "pattern" Pattern :> Get '[JSON] GroupsR
   :<|> "api" :> "0" :> "users" :> QueryParam "pattern" Pattern :> Get '[JSON] UsersR
@@ -133,6 +136,7 @@ newtype UserFullname =
 instance FromJSON UserFullname
 instance ToJSON UserFullname
 
+-- | A 'User' in pagure consists of the user\'s fullname and username.
 data User = User {
     userFullname :: UserFullname
   , userUsername :: Username
@@ -151,7 +155,8 @@ instance ToJSON User where
 
 -- | A repository object used by various endpoints in the API.
 --
--- We return types that come directly from the API for now.
+-- We return types that come directly from the API for now, making no effort to
+-- convert them into nicer, more Haskelly types.
 data Repo = Repo {
     repoDateCreated :: T.Text
   , repoDescription :: T.Text
