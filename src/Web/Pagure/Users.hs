@@ -19,16 +19,27 @@ import Servant.Docs hiding (API)
 -- We introduce a convention of having the *response* types end in R.
 
 type UsersAPI =
-  "api" :> "0" :> "groups" :> QueryParam "pattern" T.Text :> Get '[JSON] GroupsR
-  :<|> "api" :> "0" :> "users" :> QueryParam "pattern" T.Text :> Get '[JSON] UsersR
+  "api" :> "0" :> "groups" :> QueryParam "pattern" Pattern :> Get '[JSON] GroupsR
+  :<|> "api" :> "0" :> "users" :> QueryParam "pattern" Pattern :> Get '[JSON] UsersR
   :<|> "api" :> "0" :> "user" :> Capture "username" Username :> Get '[JSON] UserR
+
+-- | A pattern to filter out responses in endpoints which permit such filtering.
+newtype Pattern = Pattern T.Text deriving (Eq, Generic, IsString, Ord, Show)
+
+instance ToHttpApiData Pattern where toUrlPiece (Pattern a) = a
+instance ToParam (QueryParam "pattern" Pattern) where
+  toParam _ =
+    DocQueryParam "pattern"
+                  ["Fed*", "*web*", "*ora", "..."]
+                  "An optional pattern to filter by"
+                  Normal
 
 ------------------------------------------------------------
 -- groups
 ------------------------------------------------------------
 
 -- | A pagure group. The only thing we get about it from the API is its name.
-newtype GroupName = GroupName T.Text deriving (Eq, Generic, Ord, Show)
+newtype GroupName = GroupName T.Text deriving (Eq, Generic, IsString, Ord, Show)
 instance FromJSON GroupName
 instance ToJSON GroupName
 
@@ -55,14 +66,6 @@ instance ToSample GroupsR where
                                   , GroupName "fedora-web"
                                   ] 2
                         ]
-
-instance ToParam (QueryParam "pattern" T.Text) where
-  toParam _ =
-    DocQueryParam "pattern"
-                  ["Fed*", "*web*", "*ora", "..."]
-                  "An optional pattern to filter by"
-                  Normal
-
 
 ------------------------------------------------------------
 -- users

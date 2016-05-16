@@ -6,7 +6,6 @@ module Web.Pagure where
 
 import Control.Monad.Trans.Except (ExceptT, runExceptT)
 import Data.Proxy
-import qualified Data.Text as T
 import Network.HTTP.Client (Manager, newManager)
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Servant.API
@@ -20,13 +19,13 @@ api :: Proxy API
 api = Proxy
 
 pagureGroups
-  :: Maybe T.Text -- ^ An optional pattern to filter by
+  :: Maybe Pattern -- ^ An optional pattern to filter by
   -> Manager
   -> BaseUrl
   -> ClientM GroupsR
 
 pagureUsers
-  :: Maybe T.Text -- ^ An optional pattern to filter by
+  :: Maybe Pattern -- ^ An optional pattern to filter by
   -> Manager
   -> BaseUrl
   -> ClientM UsersR
