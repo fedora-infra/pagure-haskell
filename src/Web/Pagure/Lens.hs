@@ -10,3 +10,4 @@ import Web.Pagure.Users
 
 makeFields ''GroupsR
 makeFields ''UsersR
+makeFields ''UserR

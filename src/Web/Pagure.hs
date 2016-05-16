@@ -31,7 +31,13 @@ pagureUsers
   -> BaseUrl
   -> ClientM UsersR
 
-pagureGroups :<|> pagureUsers = client api
+pagureUser
+  :: Username -- ^ The user to get information for
+  -> Manager
+  -> BaseUrl
+  -> ClientM UserR
+
+pagureGroups :<|> pagureUsers :<|> pagureUser = client api
 
 -- | Run a query against the PRODUCTION pagure instance.
 prod :: (Manager -> BaseUrl -> ExceptT e IO a) -> IO (Either e a)
