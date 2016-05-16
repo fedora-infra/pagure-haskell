@@ -13,6 +13,22 @@ In this project is also a `git-pagure` binary which is a commandline client
 for interacting with pagure. It is a rewrite of `pagure-cli` using the new
 Servant implementation.
 
+### Example Usage
+
+```
+$ git pagure user codeblock
+User      : codeblock
+Full Name : Ricky Elrod
+# Repos   : 4
+# Forks   : 1
+```
+
+```
+$ git pagure groups -p '*Infra*'
+* Fedora-Infra
+Total groups: 1
+```
+
 # License
 
 BSD-2. (c) 2016 Red Hat, Inc. See LICENSE for details.
