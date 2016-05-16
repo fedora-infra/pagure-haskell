@@ -11,3 +11,6 @@ import Web.Pagure.Users
 makeFields ''GroupsR
 makeFields ''UsersR
 makeFields ''UserR
+makeFields ''Repo
+makeFields ''User
+makeFields ''RepoSettings
