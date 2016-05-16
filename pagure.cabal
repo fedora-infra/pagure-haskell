@@ -14,10 +14,14 @@ cabal-version:       >= 1.10
 
 library
   exposed-modules:
-    Web.Pagure
+      Web.Pagure
+    , Web.Pagure.Lens
+    , Web.Pagure.Users
+
   build-depends:       aeson >= 0.7 && < 1
                      , base >= 4 && < 5
-                     , http-client
+                     , http-client >= 0.4 && < 0.5
+                     , http-client-tls >= 0.2 && < 0.3
                      , lens >= 4 && < 5
                      , lens-aeson >= 1 && < 2
                      , servant >= 0.7 && < 1
