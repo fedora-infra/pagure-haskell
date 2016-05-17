@@ -11,7 +11,6 @@ import Data.Aeson as A
 import qualified Data.HashMap.Strict as HM
 import Control.Monad (mzero)
 import qualified Data.Text as T
-import Servant.API
 import Servant.Docs hiding (API)
 
 ------------------------------------------------------------
@@ -71,3 +70,25 @@ instance ToSample ErrorCodesR where
       , ("EPULLREQUESTSDISABLED", "Pull-Request have been deactivated for this project")
       , ("ETRACKERDISABLED", "Issue tracker disabled for this project")
       ]
+
+
+------------------------------------------------------------
+-- tags
+------------------------------------------------------------
+
+-- | @/tags@ endpoint response.
+data TagsR = TagsR {
+    tagsRTags :: [T.Text]
+  , tagsRTotalTags :: Integer
+  } deriving (Show)
+
+instance FromJSON TagsR where
+  parseJSON (Object x) = TagsR <$> x .: "tags"
+                               <*> x .: "total_tags"
+  parseJSON _ = mzero
+
+instance ToJSON TagsR where
+  toJSON (TagsR a b) = object ["tags" .= a, "total_tags" .= b]
+
+instance ToSample TagsR where
+  toSamples _ = singleSample (TagsR ["tag1", "tag2"] 2)

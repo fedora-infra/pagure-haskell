@@ -6,6 +6,7 @@
 module Web.Pagure.Lens where
 
 import Control.Lens
+import Web.Pagure.Common
 import Web.Pagure.Extras
 import Web.Pagure.Users
 
@@ -14,6 +15,7 @@ makeFields ''GroupName
 makeFields ''GroupsR
 makeFields ''Repo
 makeFields ''RepoSettings
+makeFields ''TagsR
 makeFields ''User
 makeFields ''UserFullname
 makeFields ''UserR

@@ -23,6 +23,8 @@ type API =
   -- Extras
   :<|> "api" :> "0" :> "version" :> Get '[JSON] VersionR
   :<|> "api" :> "0" :> "error_codes" :> Get '[JSON] ErrorCodesR
+  :<|> "api" :> "0" :> Capture "repo" RepoName :> "tags" :> Get '[JSON] TagsR
+  :<|> "api" :> "0" :> "fork" :> Capture "username" Username :> Capture "repo" RepoName :> "tags" :> Get '[JSON] TagsR
 
 
 api :: Proxy API
@@ -56,11 +58,26 @@ pagureErrorCodes
   -> BaseUrl
   -> ClientM ErrorCodesR
 
+pagureTags
+  :: RepoName -- ^ The repository to get information for
+  -> Manager
+  -> BaseUrl
+  -> ClientM TagsR
+
+pagureTagsFork
+  :: Username -- ^ The owner of the repository
+  -> RepoName -- ^ The repository to get information for
+  -> Manager
+  -> BaseUrl
+  -> ClientM TagsR
+
 pagureGroups
   :<|> pagureUsers
   :<|> pagureUser
   :<|> pagureVersion
-  :<|> pagureErrorCodes = client api
+  :<|> pagureErrorCodes
+  :<|> pagureTags
+  :<|> pagureTagsFork = client api
 
 -- | Run a query against the PRODUCTION pagure instance.
 prod :: (Manager -> BaseUrl -> ExceptT e IO a) -> IO (Either e a)
