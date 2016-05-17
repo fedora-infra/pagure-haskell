@@ -1,3 +1,27 @@
+## GET /api/0/error_codes
+
+#### Authentication
+
+
+
+Clients must supply the following data
+
+
+#### Response:
+
+- Status code 200
+- Headers: []
+
+- Supported content types are:
+
+    - `application/json`
+
+- Response body as below.
+
+```javascript
+{"error_codes":{"ENOCOMMENT":"Comment not found","ENOREQ":"Pull-Request not found","ENOISSUE":"Issue not found","ENOTASSIGNED":"This request must be assigned to be merged","EDBERROR":"An error occured at the database level and prevent the action from reaching completion","ENOTASSIGNEE":"Only the assignee can merge this review","ENOCODE":"Variable message describing the issue","EINVALIDTOK":"Invalid or expired token. Please visit https://pagure.io/ to get or renew your API token.","EPRSCORE":"This request does not have the minimum review score necessary to be merged","EINVALIDREQ":"Invalid or incomplete input submited","ENOPROJECTS":"No projects found","EPULLREQUESTSDISABLED":"Pull-Request have been deactivated for this project","ENOUSER":"No such user found","ETRACKERDISABLED":"Issue tracker disabled for this project","ENOPRCLOSE":"You are not allowed to merge/close pull-request for this project","ENOPROJECT":"Project not found","EISSUENOTALLOWED":"You are not allowed to view this issue"}}
+```
+
 ## GET /api/0/groups
 
 #### Authentication
@@ -98,6 +122,30 @@ Clients must supply the following data
 
 ```javascript
 {"users":["codelock","janedoe"],"total_users":2}
+```
+
+## GET /api/0/version
+
+#### Authentication
+
+
+
+Clients must supply the following data
+
+
+#### Response:
+
+- Status code 200
+- Headers: []
+
+- Supported content types are:
+
+    - `application/json`
+
+- Response body as below.
+
+```javascript
+{"version":"0.6"}
 ```
 
 
