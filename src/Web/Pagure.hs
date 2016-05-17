@@ -10,10 +10,19 @@ import Network.HTTP.Client (Manager, newManager)
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Servant.API
 import Servant.Client
+import Web.Pagure.Extras
 import Web.Pagure.Users
 
 -- | A description of pagure API endpoints
-type API = UsersAPI
+type API =
+  -- Users
+  "api" :> "0" :> "groups" :> QueryParam "pattern" Pattern :> Get '[JSON] GroupsR
+  :<|> "api" :> "0" :> "users" :> QueryParam "pattern" Pattern :> Get '[JSON] UsersR
+  :<|> "api" :> "0" :> "user" :> Capture "username" Username :> Get '[JSON] UserR
+  -- Extras
+  :<|> "api" :> "0" :> "version" :> Get '[JSON] VersionR
+  :<|> "api" :> "0" :> "error_codes" :> Get '[JSON] ErrorCodesR
+
 
 api :: Proxy API
 api = Proxy
@@ -36,7 +45,21 @@ pagureUser
   -> BaseUrl
   -> ClientM UserR
 
-pagureGroups :<|> pagureUsers :<|> pagureUser = client api
+pagureVersion
+  :: Manager
+  -> BaseUrl
+  -> ClientM VersionR
+
+pagureErrorCodes
+  :: Manager
+  -> BaseUrl
+  -> ClientM ErrorCodesR
+
+pagureGroups
+  :<|> pagureUsers
+  :<|> pagureUser
+  :<|> pagureVersion
+  :<|> pagureErrorCodes = client api
 
 -- | Run a query against the PRODUCTION pagure instance.
 prod :: (Manager -> BaseUrl -> ExceptT e IO a) -> IO (Either e a)

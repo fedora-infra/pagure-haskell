@@ -18,14 +18,6 @@ import Servant.Docs hiding (API)
 
 -- We introduce a convention of having the *response* types end in R.
 
--- | Endpoints for the \"Users\" section of the API.
---
--- See https://pagure.io/api/0/#users for details.
-type UsersAPI =
-  "api" :> "0" :> "groups" :> QueryParam "pattern" Pattern :> Get '[JSON] GroupsR
-  :<|> "api" :> "0" :> "users" :> QueryParam "pattern" Pattern :> Get '[JSON] UsersR
-  :<|> "api" :> "0" :> "user" :> Capture "username" Username :> Get '[JSON] UserR
-
 -- | A pattern to filter out responses in endpoints which permit such filtering.
 newtype Pattern = Pattern T.Text deriving (Eq, Generic, IsString, Ord, Show)
 
