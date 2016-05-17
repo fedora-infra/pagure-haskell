@@ -10,6 +10,7 @@ import Network.HTTP.Client (Manager, newManager)
 import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Servant.API
 import Servant.Client
+import Web.Pagure.Common
 import Web.Pagure.Extras
 import Web.Pagure.Users
 

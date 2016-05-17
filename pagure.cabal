@@ -15,6 +15,7 @@ cabal-version:       >= 1.10
 library
   exposed-modules:
       Web.Pagure
+    , Web.Pagure.Common
     , Web.Pagure.Extras
     , Web.Pagure.Lens
     , Web.Pagure.Users

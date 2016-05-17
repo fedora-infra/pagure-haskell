@@ -15,19 +15,9 @@ import qualified Data.Text as T
 import GHC.Generics
 import Servant.API
 import Servant.Docs hiding (API)
+import Web.Pagure.Common
 
 -- We introduce a convention of having the *response* types end in R.
-
--- | A pattern to filter out responses in endpoints which permit such filtering.
-newtype Pattern = Pattern T.Text deriving (Eq, Generic, IsString, Ord, Show)
-
-instance ToHttpApiData Pattern where toUrlPiece (Pattern a) = a
-instance ToParam (QueryParam "pattern" Pattern) where
-  toParam _ =
-    DocQueryParam "pattern"
-                  ["Fed*", "*web*", "*ora", "..."]
-                  "An optional pattern to filter by"
-                  Normal
 
 ------------------------------------------------------------
 -- groups
