@@ -48,7 +48,7 @@ instance FromJSON ErrorCodesR where
   parseJSON _ = mzero
 
 instance ToJSON ErrorCodesR where
-  toJSON (ErrorCodesR a) =  object ["error_codes" .= a]
+  toJSON (ErrorCodesR a) = toJSON a
 
 instance ToSample ErrorCodesR where
   toSamples _ =
